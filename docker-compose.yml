@@ -46,10 +46,10 @@ x-ollama: &service-ollama
     timeout: 5s
     retries: 10
   #environment:
-    # experimental features to decrease RAM usage:
-    #- OLLAMA_FLASH_ATTENTION=true
-    #- OLLAMA_KV_CACHE_TYPE=f16
-    #- OLLAMA_MAX_LOADED_MODELS=1
+  # experimental features to decrease RAM usage:
+  #- OLLAMA_FLASH_ATTENTION=true
+  #- OLLAMA_KV_CACHE_TYPE=f16
+  #- OLLAMA_MAX_LOADED_MODELS=1
 
 x-init-ollama: &init-ollama
   image: ollama/ollama:latest
@@ -66,16 +66,16 @@ x-init-ollama: &init-ollama
     - |
       # Wait for Ollama service to be ready
       sleep 3
-      
+
       # Pull large language models
       #OLLAMA_HOST=ollama:11434 ollama pull mistral-small3.1:24b
       OLLAMA_HOST=ollama:11434 ollama pull qwen3:30b-a3b-q4_K_M
-      #OLLAMA_HOST=ollama:11434 ollama pull qwen2.5vl:32b
-      OLLAMA_HOST=ollama:11434 ollama pull gemma3:27b-it-qat
+      OLLAMA_HOST=ollama:11434 ollama pull qwen3-vl:32b
+      #OLLAMA_HOST=ollama:11434 ollama pull gemma3:27b-it-qat
       #OLLAMA_HOST=ollama:11434 ollama pull devstral:24b
-      
+
       # Pull embedding model
-      OLLAMA_HOST=ollama:11434 ollama pull nomic-embed-text
+      OLLAMA_HOST=ollama:11434 ollama pull bge-m3
 
 services:
   open-webui:
@@ -115,7 +115,11 @@ services:
     volumes:
       - postgres_storage:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 20

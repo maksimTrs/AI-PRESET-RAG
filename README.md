@@ -88,7 +88,7 @@ AI-PRESET/
 1. Create owner account
 2. **Add Ollama credentials**:
    - **Chat Model**: Base URL `http://ollama:11434/v1`
-   - **Embeddings**: Base URL `http://ollama:11434`, Model `nomic-embed-text`
+   - **Embeddings**: Base URL `http://ollama:11434`, Model `bge-m3`
 
 ### Docling Setup (Document Processing)
 
@@ -116,14 +116,14 @@ AI-PRESET/
 
 **Default Models** (automatically downloaded):
 
-- `gemma3:27b-it-qat` - Lightweight model with multimodal and images understanding
-- `qwen3:30b-a3b-q4_K_M` - Model with Hybrid Thinking Mode (https://qwenlm.github.io/blog/qwen3/#advanced-usages)
-- `nomic-embed-text` - Text embeddings
+- `qwen3-vl:32b` - Most powerful vision-language model in Qwen family for multimodal understanding
+- `qwen3:30b-a3b-q4_K_M` - Model with Hybrid Thinking Mode for advanced reasoning (https://qwenlm.github.io/blog/qwen3/#advanced-usages)
+- `bge-m3` - State-of-the-art embedding model with 72% retrieval accuracy, optimized for RAG applications
 
 **Additional Models** (commented out, can be enabled in docker-compose.yml):
 
 - `mistral-small3.1:24b` - Efficient multimodal model excelling at multilingual tasks, images understanding
-- `qwen2.5vl:32b` - Advanced vision-language model with enhanced multimodal capabilities
+- `gemma3:27b-it-qat` - Lightweight model with multimodal and images understanding
 - `devstral:24b` - Coding-focused model optimized for development tasks
 
 **To customize models**: Edit `docker-compose.yml` → `x-init-ollama` section → Uncomment or add `ollama pull` commands
