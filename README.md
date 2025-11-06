@@ -7,12 +7,14 @@ A Docker Compose setup for running a complete local AI stack with **n8n**, **Oll
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Docker Desktop** (Windows/Mac) or **Docker Engine + Compose** (Linux)
 - **For GPU**: NVIDIA drivers
 
 ### Setup
 
 1. **Create environment file** (`.env`):
+
 ```bash
 # PostgreSQL & pgAdmin
 POSTGRES_USER=n8n_user
@@ -32,11 +34,13 @@ N8N_USER_MANAGEMENT_JWT_SECRET=another_secure_random_32_byte_hex_string
 ```
 
 2. **Create directories**:
+
 ```bash
 mkdir -p ./n8n/backup ./shared
 ```
 
 3. **Start the stack**:
+
 ```bash
 # CPU only
 docker compose --profile cpu up -d
@@ -59,17 +63,18 @@ AI-PRESET/
 
 ## 🌐 Access Services
 
-| Service | URL | Purpose |
-|---------|-----|---------|
+| Service        | URL                                     | Purpose                |
+| -------------- | --------------------------------------- | ---------------------- |
 | **Open WebUI** | [localhost:3000](http://localhost:3000) | ChatGPT-like interface |
-| **n8n** | [localhost:5678](http://localhost:5678) | Workflow automation |
-| **Docling** | [localhost:5001](http://localhost:5001) | Document parsing & OCR |
-| **pgAdmin** | [localhost:5050](http://localhost:5050) | Database management |
-| **Ollama API** | localhost:11434 | LLM API endpoint |
+| **n8n**        | [localhost:5678](http://localhost:5678) | Workflow automation    |
+| **Docling**    | [localhost:5001](http://localhost:5001) | Document parsing & OCR |
+| **pgAdmin**    | [localhost:5050](http://localhost:5050) | Database management    |
+| **Ollama API** | localhost:11434                         | LLM API endpoint       |
 
 ## ⚙️ Configuration
 
 ### Open WebUI Setup
+
 1. Login with admin credentials from `.env` file
 2. **Configure Ollama**: Settings → Models → Add endpoint: `http://ollama:11434`
 3. **Configure n8n Function**: Admin → Functions → Find imported function → Configure Valves:
@@ -79,13 +84,16 @@ AI-PRESET/
    - **Response Field**: `output`
 
 ### n8n Setup
+
 1. Create owner account
 2. **Add Ollama credentials**:
    - **Chat Model**: Base URL `http://ollama:11434/v1`
    - **Embeddings**: Base URL `http://ollama:11434`, Model `nomic-embed-text`
 
 ### Docling Setup (Document Processing)
+
 **Basic HTTP Request Configuration for n8n:**
+
 - **Method**: POST
 - **URL**: `http://host.docker.internal:5001/v1alpha/convert/file`
 - **Headers**: `accept: application/json`
@@ -98,6 +106,7 @@ AI-PRESET/
 **Features**: Advanced PDF parsing, table extraction, OCR, layout analysis
 
 ### pgAdmin Setup
+
 1. Login with credentials from `.env`
 2. **Connect to PostgreSQL**:
    - Host: `postgres`, Port: `5432`
@@ -106,29 +115,37 @@ AI-PRESET/
 ## 🤖 Available Models
 
 **Default Models** (automatically downloaded):
-- `gemma3:12b-it-qat` - Lightweight model with multimodal and images understanding
-- `mistral-small3.1:24b` - Efficient multimodal model excelling at multilingual tasks, images understanding
+
+- `gemma3:27b-it-qat` - Lightweight model with multimodal and images understanding
 - `qwen3:30b-a3b-q4_K_M` - Model with Hybrid Thinking Mode (https://qwenlm.github.io/blog/qwen3/#advanced-usages)
-- `qwen2.5vl:32b` - Advanced vision-language model with enhanced multimodal capabilities
 - `nomic-embed-text` - Text embeddings
 
-**To customize models**: Edit `docker-compose.yml` → `x-init-ollama` section → `ollama pull` commands
+**Additional Models** (commented out, can be enabled in docker-compose.yml):
+
+- `mistral-small3.1:24b` - Efficient multimodal model excelling at multilingual tasks, images understanding
+- `qwen2.5vl:32b` - Advanced vision-language model with enhanced multimodal capabilities
+- `devstral:24b` - Coding-focused model optimized for development tasks
+
+**To customize models**: Edit `docker-compose.yml` → `x-init-ollama` section → Uncomment or add `ollama pull` commands
 
 ## 🔗 n8n-Open WebUI Integration
 
 ### How It Works
+
 1. User sends message in Open WebUI
 2. n8n pipe function intercepts and forwards to n8n webhook
 3. n8n processes via workflow and returns response
 4. Response displayed in Open WebUI
 
 ### Function Features
+
 - ✅ **Auto-imported** during startup
 - ✅ **Real-time status** indicators
 - ✅ **Session management** for chat context
 - ✅ **Error handling** and reporting
 
 ### Use Cases
+
 - **RAG Applications**: Document processing with Docling + vector search
 - **Document Analysis**: PDF parsing, table extraction, OCR processing
 - **Database Integration**: Dynamic data retrieval
@@ -138,6 +155,7 @@ AI-PRESET/
 ## 🛠️ Docker Compose Architecture
 
 ### Services
+
 - **open-webui**: ChatGPT-like interface with auto-imported functions
 - **n8n**: Workflow automation with auto-imported workflows
 - **docling**: Document parsing and OCR service
@@ -147,6 +165,7 @@ AI-PRESET/
 - **ollama-pull**: Automatic model downloader
 
 ### Key Features
+
 - **Automatic Setup**: Functions and workflows imported on startup
 - **Network Isolation**: Internal Docker networks for security
 - **Volume Persistence**: Data survives container restarts
@@ -154,13 +173,13 @@ AI-PRESET/
 
 ## 🔧 Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| **Port conflicts** | Edit `ports:` in `docker-compose.yml` |
-| **Service failures** | Check logs: `docker compose logs [service-name]` |
-| **GPU issues** | Verify NVIDIA drivers and container toolkit |
-| **Model downloads** | Monitor: `docker compose logs -f ollama-pull-llama-[cpu/gpu]` |
-| **Function not working** | Check n8n webhook URL in Open WebUI function settings |
+| Issue                    | Solution                                                      |
+| ------------------------ | ------------------------------------------------------------- |
+| **Port conflicts**       | Edit `ports:` in `docker-compose.yml`                         |
+| **Service failures**     | Check logs: `docker compose logs [service-name]`              |
+| **GPU issues**           | Verify NVIDIA drivers and container toolkit                   |
+| **Model downloads**      | Monitor: `docker compose logs -f ollama-pull-llama-[cpu/gpu]` |
+| **Function not working** | Check n8n webhook URL in Open WebUI function settings         |
 
 ## 🔒 Security Notes
 
