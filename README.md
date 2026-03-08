@@ -13,33 +13,14 @@ A Docker Compose setup for running a complete local AI stack with **n8n**, **Oll
 
 ### Setup
 
-1. **Create environment file** (`.env`):
+1. **Create environment file**:
 
 ```bash
-# PostgreSQL & pgAdmin
-POSTGRES_USER=n8n_user
-POSTGRES_PASSWORD=your_strong_password_here
-POSTGRES_DB=n8n_database
-PGADMIN_DEFAULT_EMAIL=admin@example.com
-PGADMIN_DEFAULT_PASSWORD=your_pgadmin_password_here
-
-# Open WebUI Admin (auto-created)
-WEBUI_ADMIN_EMAIL=admin@example.com
-WEBUI_ADMIN_USER=your_strong_password_here
-WEBUI_ADMIN_PASS=your_strong_password_here
-
-# n8n Security (generate with: openssl rand -hex 32)
-N8N_ENCRYPTION_KEY=your_secure_random_32_byte_hex_string
-N8N_USER_MANAGEMENT_JWT_SECRET=another_secure_random_32_byte_hex_string
+cp .env.example .env
+# Edit .env with your passwords
 ```
 
-2. **Create directories**:
-
-```bash
-mkdir -p ./n8n/backup ./shared
-```
-
-3. **Start the stack**:
+2. **Start the stack**:
 
 ```bash
 # CPU only
@@ -53,13 +34,18 @@ docker compose --profile gpu-nvidia up -d
 
 ```
 AI-PRESET/
-├── .env                                    # Environment variables
+├── .env.example                           # Environment template (copy to .env)
+├── .env                                   # Your local environment variables (not in git)
 ├── docker-compose.yml                     # Main configuration
-├── open-webui-functions-for-import.json   # Auto-imported n8n function
-├── n8n_pipe_function.py                   # Function source code
-├── n8n/backup/                           # n8n workflows (auto-imported)
-└── shared/                               # Shared files between services
+├── n8n_pipe_function.py                   # Pipe function source (human-readable)
+├── open-webui-functions-for-import.json   # Same function wrapped for Open WebUI auto-import
+├── scripts/
+│   └── open-webui-entrypoint.sh          # Auto-creates admin user & imports functions on startup
+├── n8n/backup/                           # n8n workflows (auto-imported on startup)
+└── shared/                               # Shared volume between n8n and other services
 ```
+
+> **Note**: `n8n_pipe_function.py` and `open-webui-functions-for-import.json` contain the same function code. The `.py` file is for reading/editing, the `.json` is what gets imported into Open WebUI at startup. If you edit the `.py`, you must manually update the JSON as well.
 
 ## 🌐 Access Services
 
@@ -74,6 +60,8 @@ AI-PRESET/
 ## ⚙️ Configuration
 
 ### Open WebUI Setup
+
+Admin user and n8n pipe function are **auto-created on first startup** via `scripts/open-webui-entrypoint.sh`.
 
 1. Login with admin credentials from `.env` file
 2. **Configure Ollama**: Settings → Models → Add endpoint: `http://ollama:11434`
@@ -95,7 +83,7 @@ AI-PRESET/
 **Basic HTTP Request Configuration for n8n:**
 
 - **Method**: POST
-- **URL**: `http://host.docker.internal:5001/v1alpha/convert/file`
+- **URL**: `http://docling-serve:5001/v1alpha/convert/file`
 - **Headers**: `accept: application/json`
 - **Body Type**: Form-Data
 - **Parameters**:

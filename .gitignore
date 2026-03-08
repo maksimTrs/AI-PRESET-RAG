@@ -251,3 +251,4 @@ ipython_config.py
 
 # Shared directories that may contain sensitive data
 shared/
+.claude/
