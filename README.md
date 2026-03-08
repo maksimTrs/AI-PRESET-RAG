@@ -2,7 +2,7 @@
 
 A Docker Compose setup for running a complete local AI stack with **n8n**, **Ollama (LLM)**, **PostgreSQL with pgvector**, **Docling (Document Parser)**, and **Open WebUI**. Includes automatic function import for seamless n8n-Open WebUI integration.
 
-> ⚠️ **IMPORTANT**: The LLM models require approximately **50 GB of disk space**. Ensure you have sufficient storage before starting the stack.
+> ⚠️ **IMPORTANT**: The default LLM models require approximately **7 GB of disk space** (~5 GB for Qwen3.5-9B + ~1.2 GB for BGE-M3). Optional heavier models may require up to **50+ GB**. Ensure you have sufficient storage before starting the stack.
 
 ## 🚀 Quick Start
 
@@ -87,7 +87,7 @@ AI-PRESET/
 
 1. Create owner account
 2. **Add Ollama credentials**:
-   - **Chat Model**: Base URL `http://ollama:11434/v1`
+   - **Chat Model**: Base URL `http://ollama:11434/v1`, Model `qwen3.5:9b`
    - **Embeddings**: Base URL `http://ollama:11434`, Model `bge-m3`
 
 ### Docling Setup (Document Processing)
@@ -114,17 +114,19 @@ AI-PRESET/
 
 ## 🤖 Available Models
 
-**Default Models** (automatically downloaded):
+**Default Models** (automatically downloaded, ~7 GB total):
 
-- `qwen3-vl:32b` - Most powerful vision-language model in Qwen family for multimodal understanding
-- `qwen3:30b-a3b-q4_K_M` - Model with Hybrid Thinking Mode for advanced reasoning (https://qwenlm.github.io/blog/qwen3/#advanced-usages)
-- `bge-m3` - State-of-the-art embedding model with 72% retrieval accuracy, optimized for RAG applications
+- `qwen3.5:9b` - Natively multimodal (text + vision + tool calling + thinking), beats previous-gen Qwen3-30B and Qwen3-VL on most benchmarks while being 4x smaller (~5 GB)
+- `bge-m3` - State-of-the-art embedding model with multi-language support, optimized for RAG applications (~1.2 GB)
 
-**Additional Models** (commented out, can be enabled in docker-compose.yml):
+**Optional Upgrade Models** (commented out, uncomment in docker-compose.yml for better RAG quality):
 
-- `mistral-small3.1:24b` - Efficient multimodal model excelling at multilingual tasks, images understanding
-- `gemma3:27b-it-qat` - Lightweight model with multimodal and images understanding
-- `devstral:24b` - Coding-focused model optimized for development tasks
+- `qwen3.5:35b-a3b` - Qwen MoE (35B total, 3B active), native vision, 262K context — direct upgrade from 9B (~22 GB)
+- `glm-4.7-flash` - Zhipu GLM, 30B dense, 198K context, #1 Chatbot Arena — best chat quality for RAG answers (~19 GB)
+
+**Optional Lightweight Model** (fast secondary model for simple RAG queries):
+
+- `gemma3n:4b` - Google Gemma 3n, mobile-first multimodal, 128K context — fast fallback for easy questions (~3 GB)
 
 **To customize models**: Edit `docker-compose.yml` → `x-init-ollama` section → Uncomment or add `ollama pull` commands
 

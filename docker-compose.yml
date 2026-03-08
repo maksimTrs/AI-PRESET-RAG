@@ -67,15 +67,32 @@ x-init-ollama: &init-ollama
       # Wait for Ollama service to be ready
       sleep 3
 
-      # Pull large language models
-      #OLLAMA_HOST=ollama:11434 ollama pull mistral-small3.1:24b
-      OLLAMA_HOST=ollama:11434 ollama pull qwen3:30b-a3b-q4_K_M
-      OLLAMA_HOST=ollama:11434 ollama pull qwen3-vl:32b
-      #OLLAMA_HOST=ollama:11434 ollama pull gemma3:27b-it-qat
-      #OLLAMA_HOST=ollama:11434 ollama pull devstral:24b
+      # ============================================================
+      # DEFAULT MODELS (~7 GB total)
+      # ============================================================
 
-      # Pull embedding model
+      # Main LLM + Vision: Qwen3.5-9B — natively multimodal, beats previous-gen 30B models, ~5 GB
+      OLLAMA_HOST=ollama:11434 ollama pull qwen3.5:9b
+
+      # Embedding for RAG: BGE-M3 — multilingual, dense+sparse+multi-vector retrieval, ~1.2 GB
       OLLAMA_HOST=ollama:11434 ollama pull bge-m3
+
+      # ============================================================
+      # OPTIONAL: UPGRADE — heavier models for RAG (uncomment what fits your VRAM)
+      # ============================================================
+
+      # Qwen3.5-35B MoE (3B active), native vision, 262K context — direct upgrade from 9B, ~22 GB
+      #OLLAMA_HOST=ollama:11434 ollama pull qwen3.5:35b-a3b
+
+      # GLM-4.7-Flash, 30B dense, 198K context, #1 Chatbot Arena — best chat quality for RAG answers, ~19 GB
+      #OLLAMA_HOST=ollama:11434 ollama pull glm-4.7-flash
+
+      # ============================================================
+      # OPTIONAL: LIGHTWEIGHT — fast secondary model for simple RAG queries
+      # ============================================================
+
+      # Gemma 3n 4B, Google, mobile-first multimodal, 128K context — fast fallback for easy questions, ~3 GB
+      #OLLAMA_HOST=ollama:11434 ollama pull gemma3n:4b
 
 services:
   open-webui:
