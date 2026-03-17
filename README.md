@@ -115,7 +115,7 @@ Admin user and n8n pipe function are **auto-created on first startup** via `scri
 **Optional Lightweight Model** (fast secondary model for simple RAG queries):
 
 - `gemma3n:4b` - Google Gemma 3n, mobile-first multimodal, 128K context — fast fallback for easy questions (~3 GB)
-
+- `nemotron-3-nano:4b` - NVIDIA Nemotron-3-Nano, Mamba2 hybrid, 256K context, built-in tool use/reasoning capabilities — good for agentic tasks on low VRAM (~2.8 GB)
 **To customize models**: Edit `docker-compose.yml` → `x-init-ollama` section → Uncomment or add `ollama pull` commands
 
 ## 🔗 n8n-Open WebUI Integration

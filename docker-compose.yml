@@ -93,7 +93,9 @@ x-init-ollama: &init-ollama
 
       # Gemma 3n 4B, Google, mobile-first multimodal, 128K context — fast fallback for easy questions, ~3 GB
       #OLLAMA_HOST=ollama:11434 ollama pull gemma3n:4b
-
+      
+      # Nemotron-3-Nano 4B, NVIDIA, Mamba2 hybrid, 256K context, tool use/reasoning — good for agentic tasks/reasoning on low VRAM, ~2.8 GB
+      OLLAMA_HOST=ollama:11434 ollama pull nemotron-3-nano:4b
 services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
